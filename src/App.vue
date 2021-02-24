@@ -1,18 +1,33 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <ComponentDemo />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import ComponentDemo from './components/ComponentDemo/index'
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    ComponentDemo
+  },
+  data() {
+    return {
+      num: 0
+    }
+  },
+  methods: {
+    increment1(event) {
+      console.log('event', event, event.__proto__.constructor )
+      console.log(event.target)
+      console.log(event.currentTarget)
+      this.num ++
+    },
+    increment2(val, event) {
+      console.log(event.target)
+      this.num = this.num + val
+    }
+  },
 }
 </script>
 
