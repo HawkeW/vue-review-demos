@@ -307,9 +307,60 @@ export default {
 
 ### $nextTick
 
+- vue是异步渲染的框架
+- data改变之后，DOM不会立刻渲染
+- $nextTick会在DOM渲染之后触发，以获取最新DOM节点
+
+````js
+// NextTick.vue
+<template>
+  <div>
+    <ul ref="el1">
+      <li v-for="(item, index) in list" :key="index" >{{item}}</li>
+    </ul>
+    <button @click="addItem">add</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      list: ["a", "b", "c"],
+    }
+  },
+  methods:{
+    addItem(){
+      this.list.push(`${new Date()}`)
+      this.list.push(`${new Date()}`)
+      this.list.push(`${new Date()}`)
+		// 1. 页面渲染， $nextTick 待 DOM渲染完再回调
+        // 2. 页面渲染时 会将 data 的修改做整合，多次 data修改会合并成一个
+      this.$nextTick(()=>{
+        // 获取DOM元素
+        const ulElm = this.$refs.el1
+
+        console.log(ulElm.childNodes.length)
+      })
+    }
+  }
+};
+</script>
+
+<style></style>
+
+````
+
 
 
 ### slot
+
+- 基本使用
+
+
+
+- 作用域插槽
+- 具名插槽
 
 ### 动态、异步组件
 
