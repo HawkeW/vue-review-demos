@@ -1,15 +1,17 @@
 <template>
   <div id="app">
-    <ComponentDemo />
+    <AdvanceUse />
   </div>
 </template>
 
 <script>
-import ComponentDemo from './components/ComponentDemo/index'
+// import ComponentDemo from './components/ComponentDemo/index'
+import AdvanceUse from './components/AdvanceUse/index'
 export default {
   name: 'App',
   components: {
-    ComponentDemo
+    // ComponentDemo,
+    AdvanceUse
   },
   data() {
     return {
