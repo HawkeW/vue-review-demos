@@ -252,7 +252,7 @@ beforeDestroy() {
 
 ## Vue高级特性
 
-### 目的
+### 0 目的
 
 - 不是每个都很常用，但用到必须会
 - 对Vue掌握是否全免
@@ -272,7 +272,7 @@ beforeDestroy() {
 
 - mixin
 
-### 自定义v-model
+### 1. 自定义v-model
 
 常见用于：颜色选择器
 
@@ -305,9 +305,9 @@ export default {
 </script>
 ```
 
-### $nextTick
+### 2. $nextTick
 
-- vue是异步渲染的框架
+- **vue是异步渲染的框架**
 - data改变之后，DOM不会立刻渲染
 - $nextTick会在DOM渲染之后触发，以获取最新DOM节点
 
@@ -353,20 +353,360 @@ export default {
 
 
 
-### slot
+### 3. slot
 
 - 基本使用
 
+```js
+// BasicSlot.vue
+<template>
+  <div>
+    <a :href="url">
+      <slot>
+        {{webSite.title}}
+      </slot>
+    </a>
+  </div>
+</template>
 
+<script>
+export default {
+  props:['url'],
+  data(){
+    return {
+      webSite:{
+        url: 'http://oncew.com',
+        title: '一度',
+        subTitle: '杂谈'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+```js
+// 使用
+   <BasicSlot :url="webSite.url">
+      {{webSite.title}}
+    </BasicSlot>
+```
 
 - 作用域插槽
+
+```js
+<ScopedSlot v-slot="slotPorps">
+  <template>
+      {{slotPorps.slotInfo.title}}
+  </template>
+</ScopedSlot>
+```
+
+
+
+```js
+// ScopedSlot.vue
+<template>
+  <div>
+    <a :href="url">
+      <slot :slotInfo="webSite">
+        {{webSite.title}}
+      </slot>
+    </a>
+  </div>
+</template>
+
+<script>
+export default {
+  props:['url'],
+  data(){
+    return {
+      webSite:{
+        url: 'http://oncew.com',
+        title: '一度de',
+        subTitle: '杂谈'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
 - 具名插槽
 
-### 动态、异步组件
+```js
+// NamedSlot.vue
+<template>
+  <div class="container">
+    <header>
+      <slot name="header"></slot>
+    </header>
 
-### keep-alive
+    <main>
+      <slot></slot>
+    </main>
 
-### mixin
+    <footer>
+      <slot name="footer"></slot>
+    </footer>
+  </div>
+</template>
+```
 
+```js
+<NamedSlot>
+    <!-- v-slot:header 缩写 #header -->
+    <template v-slot:header>
+       <h1>slot header </h1>
+	</template>
 
+    <p>默认slot  无名slot</p>
+    <p>And another one.</p>
 
+    <template v-slot:footer>
+        <p>Here's some contact info</p>
+    </template>
+</NamedSlot>
+```
+
+### 4. 动态组件
+
+- `<component>`及`:is="compoenent-name"`用法
+- 需要根据数据动态渲染的场景。即组件类型不确定
+
+```js
+<!-- 动态组件 -->
+<div> 
+    <component v-for="(item, key) in news" :key="key" :is="item.type">{{item.content}}
+    </component>
+</div>
+
+...
+data(){
+    return {
+      news: {
+        1: {
+          type:'eText',
+          content: '123'
+        },
+        2: {
+          type:'eText',
+          content: '123'
+        },
+        3: {
+          type:'img',
+          content: '123'
+        },
+    }
+}
+```
+
+### 5. 异步组件
+
+- import() 函数
+- 按需加载，异步加载大组件
+
+```js
+components:{
+    FormDemo: () => import('./FormDemo.vue')
+}
+```
+
+### 6. keep-alive
+
+- 缓存组件
+- 频繁切换，不需要重复渲染
+- Vue常见性能优化
+
+```js
+<!-- keep-alive -->
+<button @click="state = 'A'">A</button>
+<button @click="state = 'B'">B</button>
+<button @click="state = 'C'">C</button>
+<keep-alive>
+   <KeepAliveA v-if="state === 'A'"/>
+   <KeepAliveB v-if="state === 'B'" />
+   <KeepAliveC v-if="state === 'C'" />
+</keep-alive>
+```
+
+- 加keep-alive前，每次切换会销毁当前组件，挂载新组件；（A-->B, A destroyed, B mounted）
+- 加keep-alive后，切换组件不会销毁当前组件
+
+### 7. mixin
+
+- 多个组件有相同的逻辑，抽离出来
+- mixin 不是一个完美解决方案，会有一些问题
+- Vue3 提出的Composition API 旨在解决这些问题
+
+```js
+// mixin.js
+export default {
+  data(){
+    return {
+      city: '深圳',
+    }
+  },
+  methods: {
+    showName(){
+      console.log(this.name)
+    }
+  },
+  mounted(){
+    console.log('component mounted', this.city)
+  }
+}
+```
+
+```js
+// MixinDemo
+<template>
+    <div>
+      {{name}}
+      <hr>
+      {{major}}
+      <hr>
+      {{city}}
+      <button @click="showName">显示姓名</button>
+    </div>
+</template>
+
+<script>
+import myMixin from './mixin'
+export default {
+  mixins: [myMixin],
+  data(){
+    return {
+      name: '一度',
+      major: '前端'
+    }
+  },
+  methods: {
+    
+  },
+  mounted(){
+    console.log('component mounted', this.name)
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+**问题**
+
+- 变量来源不明确，不利于阅读
+
+- 多mixin可能造成命名冲突
+- mixin和组件可能出现多对多的关系，复杂度较高
+
+## vuex和vue-router
+
+### vuex知识点
+
+- 面试考点不多
+- 基本概念，基本使用和API必须掌握
+- 可能会考察state的数据结构设计
+
+基本概念
+
+- state
+- getters
+- action
+- mutation
+
+用于vue组件
+
+- dispatch
+- commit 
+- mapState
+- mapMutations
+- mapActions
+- mapGetters
+
+![1614323772858](C:\Users\Administrator\Desktop\my-vue-review\note\imgs\vuebasic\vuex.png)
+
+**重点**
+
+- 异步操作必须在Actions中操作
+
+### vue-router
+
+- 面试考点不多
+- 路由模式（has、H5 history）
+
+hash模式（默认）, 如http://abc.com/#/user/20
+
+H5 history 模式， 如http://abc.com/user/20
+
+后端需要配置
+
+history 404 配置
+
+```js
+const router = new VueRouter({
+  mode: 'history',
+  routes: [
+    { path: '*', component: NotFoundComponent }
+  ]
+})
+```
+
+- 路由配置（动态路由、懒加载）
+
+动态路由
+
+```js
+const User = {
+  template: '<div>User</div>'
+}
+
+const router = new VueRouter({
+  routes: [
+    // 动态路径参数 以冒号开头
+    { path: '/user/:id', component: User }
+  ]
+})
+```
+
+```js
+const User = {
+  template: '<div>User {{ $route.params.id }}</div>'
+}
+```
+
+懒加载
+
+```js
+const router = new VueRouter({
+  routes: [
+    { path: '/foo', component: () => import('./Foo.vue') }
+  ]
+})
+```
+
+## 总结
+
+- v-show 和 v-if 的区别，以及keep-alive
+- 为何 v-for 中要用key *
+
+- 描述Vue组件声明周期以及有父子组件的情况
+
+- vue组件如何通讯
+  - 父子组件： 属性和事件触发： props 和 $emit
+  - 兄弟组件： 自定义事件： event.$on / event.$emit / event.$off
+  - vuex通讯
+- 描述组件渲染和更新的过程 * 
+- 双向数据绑定的实现原理 *
