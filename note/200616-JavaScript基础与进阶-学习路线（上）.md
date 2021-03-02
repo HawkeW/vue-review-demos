@@ -190,6 +190,8 @@ const c = true + '10';//true10
 ```
 
 - == 和 ===
+  - == 会对变量进行强制类型转换
+  - === 比较的是变量
 
 ```javascript
 100 == '100'; //true
@@ -439,7 +441,7 @@ console.log(x); // undefined
 - 一个变量在当前作用域没有定义，但被使用了，这个变量就是自由变量
 - 向上级作用域，一层一层一次寻找，直至找到为止
 - 如果全局作用域没有找到，则报错 xx is not defined
-- *自由变量的查找，是在函数定义的地方向上级作用域查找，而不是在执行的地方*
+- *自由变量的查找，是在**函数定义的地方**向上级作用域查找，而不是在执行的地方*
 
 #### 闭包
 
@@ -465,7 +467,7 @@ fn(); //100
 // 函数作为参数
 function print(fn) {
     const b = 200;
-    fn1();
+    fn();
 }
 const b = 100;
 function fn1() {
@@ -488,11 +490,11 @@ print(fn1);//100
 
 5. 箭头函数 --> 取上级作用域的`this`
 
-**特点：** *this的取值，是在函数执行的时候决定的，而不是在函数定义的时候*
+**特点：** ***this的取值，是在函数执行的时候决定的，而不是在函数定义的时候***
 
 ```javascript
 function fn1(){
-    console.log(this);
+    console.log(this); 
 }
 fn1(); // window
 
@@ -510,7 +512,7 @@ fn2() // { x : 200 }
 ```javascript
 // 模拟bind
 Function.prototype.bind1 = function () {
-    // 将参数拆解为数组
+    // 将参数拆解为数组 Array.prototype.slice.call 将 列表 转换为 数组
     const args = Array.prototype.slice.call(arguments);
 
     // 获取this( 数组第一项 )
@@ -573,12 +575,12 @@ console.log( c.get('a') );
 
 #### 单线程和异步
 
-- JS是单线程语言，智能同时做一件事
-- 浏览器和nodejs只支持JS启动进程，如web Worker
-- JS和DOM渲染公用同一个县城，因为JS和修改DOM结构
+- `JS`是单线程语言，只能同时做一件事
+- 浏览器和`nodejs`已支持`JS`启动进程，如`web Worker`
+- `JS`和`DOM`渲染公用同一个线程，因为`JS`可以修改`DOM`结构
 - 遇到等待（网络请求，定时任务）不能卡住
 - 所以需要异步
-- 回调callback函数形式
+- 基于`callback`回调函数形式调用
 
 ```js
 //异步
@@ -593,11 +595,11 @@ alert(200);
 console.log(300);
 ```
 
-基于JS是单线程语言的本质，异步不会阻塞代码执行，而同步会阻塞代码执行
+基于`JS`是单线程语言的本质，异步不会阻塞代码执行，而同步会阻塞代码执行
 
 ##### 应用场景
 
-- 网络请求，如ajax图片加载
+- 网络请求，如`ajax`图片加载
 
 
 ```js
@@ -640,7 +642,7 @@ setInterval(function () {
 console.log(300);
 ```
 
-##### callbackhell
+##### callback hell
 
 ```js
 //获取第一份数据
@@ -692,17 +694,18 @@ getData(url1).then(data1 => {
 
 #### 题目
 
-- 同步和异步的区别是什么
+- 同步和异步的区别是什么?
 
-  - JS是单线程语言
-  - 异步不会阻塞代码执行，而同步会阻塞代码执行
-- 手写用Promise加载一张图片
+  - 异步是基于`JS`是单线程的
+  - 异步不会阻塞代码执行
+  - 同步会阻塞代码执行
+- 手写用Promise加载一张图片?
 
 ```js
 const url = "https://zhuoqiong.tongtool.com/file//011657/product/6768011657201912020000590289/8b93.png";
 
 function loadImg(src) {
-    return new Promise(
+    const p = new Promise(
         (resolve, reject) => {
             const img = document.createElement('img');
             img.onload = () => {
@@ -746,7 +749,7 @@ loadImg(url1).then( img1 => {
 - 前端使用异步的场景有哪些？
   - 网络请求，如ajax请求，图片加载
   - 定时任务，如setTimeout
-- 如题代码，输出是什么
+- 如题代码，输出是什么?
 
 ```js
 //setTimeout笔试题
