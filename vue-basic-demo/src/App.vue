@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <AdvanceUse />
-    list branch check
+    list branch check dev_wh branch check
   </div>
 </template>
 
