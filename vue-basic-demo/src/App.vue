@@ -1,36 +1,37 @@
 <template>
   <div id="app">
     <AdvanceUse />
+    list branch check dev_wh branch check
   </div>
 </template>
 
 <script>
 // import ComponentDemo from './components/ComponentDemo/index'
-import AdvanceUse from './components/AdvanceUse/index'
+import AdvanceUse from './components/AdvanceUse/index';
 export default {
   name: 'App',
   components: {
     // ComponentDemo,
-    AdvanceUse
+    AdvanceUse,
   },
   data() {
     return {
-      num: 0
-    }
+      num: 0,
+    };
   },
   methods: {
     increment1(event) {
-      console.log('event', event, event.__proto__.constructor )
-      console.log(event.target)
-      console.log(event.currentTarget)
-      this.num ++
+      console.log('event', event, event.__proto__.constructor);
+      console.log(event.target);
+      console.log(event.currentTarget);
+      this.num++;
     },
     increment2(val, event) {
-      console.log(event.target)
-      this.num = this.num + val
-    }
+      console.log(event.target);
+      this.num = this.num + val;
+    },
   },
-}
+};
 </script>
 
 <style>
